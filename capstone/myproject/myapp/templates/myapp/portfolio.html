@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Poppins:wght@300;400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Uber+Move:wght@100;300;400;500;700&display=swap">
+  <style>
+    /* Original CSS styles */
+    body {
+      background: linear-gradient(to bottom, #3498db, #e74c3c);
+      margin: 0;
+      font-family: 'Uber Move', sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: gold;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .navigation {
+      display: flex;
+      list-style: none;
+      padding: 0;
+    }
+    .navigation li {
+      margin-right: 1rem;
+    }
+    .navigation a {
+      text-decoration: none;
+      color: #333;
+    }
+    .main {
+      flex: 1;
+      padding: 1rem 2rem;
+    }
+    .user-details,
+    .latest-news {
+      margin-bottom: 2rem;
+      padding: 1rem 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #fff; /* Changed background color */
+    }
+    .user-details h2,
+    .latest-news h2 {
+      margin-bottom: 1rem;
+    }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+    }
+    .details-grid div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .investment-options {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .investment-options button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .investment-options button:hover {
+      background-color: #555;
+    }
+    #reset-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #FF5733;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .latest-news {
+      background-color: #fff;
+    }
+    .news-item {
+      margin-bottom: 1rem;
+    }
+    .news-title {
+      font-weight: bold;
+    }
+    .news-link {
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="logo">Portfolio</div>
+    <nav class="navigation">
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="main">
+    <section class="user-details">
+      <h2>User Details</h2>
+      <div class="investment-options">
+        <button id="btc-buy" onclick="handleBuy('btc', 100)">Buy $100 BTC</button>
+        <button id="btc-sell" onclick="handleSell('btc', 100)">Sell $100 BTC</button>
+        <button id="eth-buy" onclick="handleBuy('eth', 100)">Buy $100 ETH</button>
+        <button id="eth-sell" onclick="handleSell('eth', 100)">Sell $100 ETH</button>
+      </div>
+      <div class="details-grid">
+        <div>User</div>
+        <div id="btc-investment">BTC Investment: $0</div>
+        <div id="eth-investment">ETH Investment: $0</div>
+        <div id="total-value">Total Value: $0</div>
+        <div id="balance">Balance: $200</div>
+      </div>
+      <button id="reset-btn" onclick="resetPortfolio()">Reset Portfolio</button>
+    </section>
+    <section class="latest-news">
+      <h2>Latest News</h2>
+      <div class="latest-news">
+        <h2>Latest News</h2>
+        <div class="news-item">
+          <span class="news-title">Bitcoin Surpasses Gold in Investor Portfolios:</span>
+          <a class="news-link" href="https://cryptonews.com/news/bitcoin-surpasses-gold-in-investor-portfolios-jpmorgan-14411.htm">Read more</a>
+        </div>
+        <div class="news-item">
+          <span class="news-title">Decoding Crypto Casinos: Understanding the Features That Make Them Exceptional:</span>
+          <a class="news-link" href="https://nerdbot.com/2024/03/17/decoding-crypto-casinos-understanding-the-features-that-make-them-exceptional/">Read more</a>
+        </div>
+        <div class="news-item">
+          <span class="news-title">Nigeria’s Regulator Proposes New Rule for Crypto Service Providers:</span>
+          <a class="news-link" href="https://www.msn.com/en-us/money/companies/nigeria-s-regulator-proposes-new-rule-for-crypto-service-providers/ar-BB1k3wST">Read more</a>
+        </div>
+    </section>
+  </main>
+</div>
+<script>
+  // Function to fetch real-time prices of Bitcoin and Ethereum
+  async function fetchPrices() {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+      const data = await response.json();
+      const btcPrice = data.bitcoin.usd;
+      const ethPrice = data.ethereum.usd;
+
+      const btcInvestment = parseFloat(localStorage.getItem('btcInvestment')) || 0;
+      const ethInvestment = parseFloat(localStorage.getItem('ethInvestment')) || 0;
+
+      const totalValue = btcInvestment * btcPrice + ethInvestment * ethPrice;
+      const balance = parseFloat(localStorage.getItem('balance')) || 200;
+
+      document.getElementById('btc-investment').innerText = `BTC Investment: $${btcInvestment.toFixed(2)}`;
+      document.getElementById('eth-investment').innerText = `ETH Investment: $${ethInvestment.toFixed(2)}`;
+      document.getElementById('total-value').innerText = `Total Value: $${totalValue.toFixed(2)}`;
+      document.getElementById('balance').innerText = `Balance: $${balance.toFixed(2)}`;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  // Function to handle buying cryptocurrency
+  function handleBuy(crypto, investment) {
+    const price = parseFloat(localStorage.getItem(`${crypto}Price`)) || 0;
+    const balance = parseFloat(localStorage.getItem('balance')) || 200;
+
+    if (balance >= investment) {
+      const storedInvestment = parseFloat(localStorage.getItem(`${crypto}Investment`)) || 0;
+      localStorage.setItem(`${crypto}Investment`, storedInvestment + investment);
+      localStorage.setItem('balance', balance - investment);
+      fetchPrices();
+    } else {
+      alert('Insufficient balance to buy!');
+    }
+  }
+
+  // Function to handle selling cryptocurrency
+  function handleSell(crypto, investment) {
+    const storedInvestment = parseFloat(localStorage.getItem(`${crypto}Investment`)) || 0;
+    const price = parseFloat(localStorage.getItem(`${crypto}Price`)) || 0;
+
+    if (storedInvestment >= investment) {
+      const balance = parseFloat(localStorage.getItem('balance')) || 200;
+      localStorage.setItem(`${crypto}Investment`, storedInvestment - investment);
+      localStorage.setItem('balance', balance + investment * price);
+      fetchPrices();
+    } else {
+      alert('Insufficient coins to sell!');
+    }
+  }
+
+  // Function to reset portfolio
+  function resetPortfolio() {
+    localStorage.clear();
+    localStorage.setItem('balance', 200);
+    fetchPrices();
+  }
+
+  // Store initial coin prices in localStorage
+  localStorage.setItem('btcPrice', 50000); // Initial BTC price assumed as $50000
+  localStorage.setItem('ethPrice', 3000); // Initial ETH price assumed as $3000
+
+  fetchPrices(); // Fetch prices when the page loads
+</script>
+</body>
+</html>
